@@ -23,7 +23,8 @@ public class UserClient {
         String name = "hello, I am " + sc.nextLine();
         byte[] data = name.getBytes(StandardCharsets.UTF_8);
 
-        try (Socket socket = new Socket("127.0.0.1", 12345, null, 9999)) {
+        // 不固定本地端口，TCP连接关闭需要等待TIME_WAIT（通常 1~4 分钟），绑定null, 9999第二次报BindException
+        try (Socket socket = new Socket("127.0.0.1", 12345)) {
 
             // 发送
             OutputStream out = socket.getOutputStream();

@@ -33,10 +33,17 @@ public class UserServer {
     }
 
     private static void initTCP() throws IOException {
+        //欢迎套接字（listening socket）
         try (ServerSocket server = new ServerSocket(12345)) {
             System.out.println("TCP server started");
+            System.out.println("Welcome socket hashCode: " + server.hashCode());
+
             while (true) {
+                // 连接套接字（connection socket）
+                // (客户端IP, 客户端端口, 服务器IP, 服务器端口)
                 Socket socket = server.accept();
+                System.out.println("Connection socket hashCode: " + socket.hashCode());
+
                 InputStream in = socket.getInputStream();
                 OutputStream out = socket.getOutputStream();
 
