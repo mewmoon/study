@@ -1,9 +1,9 @@
 package application;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.*;
 
 /**
  * @author dxy
@@ -11,12 +11,55 @@ import java.net.InetSocketAddress;
  */
 public class UserServer {
     public static void main(String[] args) throws IOException {
-        initUDP();
+        // UDP 服务线程
+        new Thread(() -> {
+            try {
+                initUDP();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        // TCP 服务线程
+        new Thread(() -> {
+            try {
+                initTCP();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+
+    }
+
+    private static void initTCP() throws IOException {
+        try (ServerSocket server = new ServerSocket(12345)) {
+            System.out.println("TCP server started");
+            while (true) {
+                Socket socket = server.accept();
+                InputStream in = socket.getInputStream();
+                OutputStream out = socket.getOutputStream();
+
+                byte[] buf = new byte[1024];
+                int read = in.read(buf);
+                String msg = new String(buf, 0, read);
+
+                String clientInfo = socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
+                String localInfo = socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort();
+                System.out.printf("[TCP REQUEST] From %s To %s: %s%n", clientInfo, localInfo, msg);
+
+                String responseMsg = msg.toUpperCase();
+                out.write(responseMsg.getBytes());
+                out.flush();
+                System.out.println("[TCP RESPONSE] " + responseMsg);
+            }
+        }
     }
 
     private static void initUDP() throws IOException {
 
         try (DatagramSocket socket = new DatagramSocket(12345)) {
+            System.out.println("UDP server started");
             while (true) {
                 byte[] buf = new byte[1024];
                 DatagramPacket request = new DatagramPacket(buf, buf.length);
@@ -24,13 +67,13 @@ public class UserServer {
                 socket.receive(request);
                 String message = new String(request.getData(), 0, request.getLength());
                 String clientInfo = request.getAddress().getHostAddress() + ":" + request.getPort();
-                System.out.printf("From %s → %s%n", clientInfo, message);
+                System.out.printf("[UDP REQUEST] From %s → %s%n", clientInfo, message);
 
                 String responseMessage = message.toUpperCase();
                 DatagramPacket response = new DatagramPacket(responseMessage.getBytes(), responseMessage.length(), request.getAddress(), request.getPort());
                 socket.send(response);
 
-                System.out.println("[RESPONSE]: " + responseMessage);
+                System.out.println("[UDP RESPONSE]: " + responseMessage);
             }
         }
     }
