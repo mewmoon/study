@@ -13,8 +13,8 @@ import java.util.*;
  */
 public class UserClient {
     public static void main(String[] args) throws IOException {
-//        initUDP();
-        initTCP();
+        initUDP();
+//        initTCP();
     }
 
     private static void initTCP() throws IOException {
