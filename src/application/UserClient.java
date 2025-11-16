@@ -13,14 +13,15 @@ import java.util.*;
  */
 public class UserClient {
     public static void main(String[] args) throws IOException {
-        initUDP();
+//        initUDP();
         initTCP();
     }
 
     private static void initTCP() throws IOException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter your name: ");
-        String name = "hello, I am " + sc.nextLine();
+//        String name = "hello, I am " + sc.nextLine();
+        String name = sc.nextLine();
         byte[] data = name.getBytes(StandardCharsets.UTF_8);
 
         // 不固定本地端口，TCP连接关闭需要等待TIME_WAIT（通常 1~4 分钟），绑定null, 9999第二次报BindException
