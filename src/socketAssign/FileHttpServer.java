@@ -8,7 +8,7 @@ import java.net.Socket;
  * @author dxy
  * @version 1.0
  */
-public class FileServer {
+public class FileHttpServer {
     public static final String PREFIX_PATH = new String("D:/data/atest");
 
     public static void main(String[] args) throws IOException {

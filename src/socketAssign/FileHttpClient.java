@@ -11,7 +11,7 @@ import java.net.Socket;
  * @version 1.0
  * Simple HTTP Client
  */
-public class HttpClient {
+public class FileHttpClient {
     public static void main(String[] args) throws IOException {
         String serverHost = "localhost"; // 服务器地址
         int serverPort = 80;           // 服务器端口
